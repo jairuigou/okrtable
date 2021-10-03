@@ -1,19 +1,16 @@
-# timelint
+# component
 
-## Project setup
-```
-npm install
-```
+## TimeLine
+时间轴，居中，无限。
+粒度: 可以切换 日，星期，月，年
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## ObjectPoint
+目标点 空心圆，圆内表示状态，圆环颜色表示优先级
+级别：两级，高级目标点由低级目标点组成
+状态：empty（表示未开始），done，proc（正在进行，高级目标点才有的状态，只要其中有低级目标点完成）
+     block（ 阻塞，表示目前暂时无法完成，无限期推延）！关于推延的逻辑还要考虑
+和时间轴连接：依靠ddl和时间轴连接，每个op都有一个ddl。
+高级目标点和时间轴连接问题：若高级目标点中的低级目标点没有自己的ddl，则都统一打在高级目标点的ddl上，且整合在一个高级点里，不分开展示。
+    若有自己的ddl，则打在时间轴上，通过飞线和自己的高级目标点展示连接关系。
+低级目标点的顺序前置实现待考虑
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

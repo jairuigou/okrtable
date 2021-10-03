@@ -1,26 +1,51 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="div1">
+    <TimeLine/>
+  </div>
+  <div id="div2">
+    <ObjectPoint/> 
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TimeLine from './components/TimeLine.vue'
+import ObjectPoint from "./components/ObjectPoint.vue"
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TimeLine,
+    ObjectPoint
+  },
+  data(){
+    return{}
+  },
+  created(){
+    window.addEventListener('resize',this.reSet);
+  },
+  mounted(){
+    this.reSet();
+  },
+  methods:{
+    reSet(){
+      console.log(window.innerHeight);
+      console.log(window.innerHeight/2 | 0);
+      document.getElementById('div1').style.top = (window.innerHeight/2 | 0).toString() + "px";
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+#div1{
+  position: fixed;
+  top: 0px;
+  z-index: 1;
+}
+#div2{
+  position: fixed;
+  top: 47%;
+  left: 50%;
+  z-index: 2;
 }
 </style>
