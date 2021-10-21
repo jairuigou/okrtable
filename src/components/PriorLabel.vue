@@ -1,42 +1,34 @@
 <template>
-    <span id="label">{{labelText}}</span>
+  <Label :labelText="labelText" :backgroundColor="backgroundColor"></Label>
 </template>
 
 <script>
+import Label from "./LabelBase.vue"
+
 export default{
-    data(){
-        return{
-            labelText: "LOW"
-        }
+    components:{
+        Label
     },
     props:{
-        label: String
+        labelText: String
     },
-    mounted(){
-        this.setColor();        
-    },
-    methods:{
-        setColor(){
-            var label = document.getElementById("label");
+    computed:{
+        backgroundColor:function(){
+            if(this.labelText == "LOW"){
+                return "#66bb6a";    
+            }
+            if(this.labelText == "MEDIUM"){
+                return "#ffca28";
+            }
             if(this.labelText == "HIGH"){
-                label.style.backgroundColor = "#f4511e";
+                return "#f4511e";
             }
-            else if(this.labelText == "MEDIUM"){
-                label.style.backgroundColor = "#ffca28";
-            }
-            else if(this.labelText == "LOW"){
-                label.style.backgroundColor = "#66bb6a";
-            }
+            return "black";
         }
     }
+
 }
 </script>
 
 <style scoped>
-#label{
-    border-radius: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    color: white;
-}
 </style>
