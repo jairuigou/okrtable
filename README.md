@@ -103,3 +103,55 @@ hover事件：显示第一次制定ddl的时间，和提前了多久。
 创建目标按钮
 ## SwitchCycle
 切换周期，显示之前周期的目标
+
+# implenment
+## 目标的编号和请求api
+目标的编号方式：yyyy+mounthid+weekid+sequence
+### getcurrent
+自动获取当前周的目标编号
+返回：objectid array
+### getbyweekid
+根据weekid获取周目标
+请求：weekid
+返回：objectid array
+
+以上两个请求在app初始化时调用，获取目标id组后，创建相应数量的object组件。
+object组件需要objectid
+### getcontentbyid
+object组件根据objectid获取具体的目标数据
+### updatecontentbyid
+object组件在目标内容更新后，上传新内容
+
+## 数据模型
+### basic info 表
+1. Object uid
+yyyy+mounthid+weekid+sequence
+2. Object descript
+目标的描述
+3. Priority
+优先级
+4. State
+状态
+### ddl表
+1. object uid
+2. ddl
+3. timestamp
+    该ddl的创建时间
+同一个uid可能有很多个ddl，这表示了该objectddl的变化，按照创建时间排序，可以展示这种变化。
+### progress表
+1. object uid
+2. timestamp
+    以天为粒度的时间戳
+3. verbose
+
+# 关于甘特图的新构想
+按照甘特图的形式，结合颜色，表达目标的进行状态。
+
+## 表格
+横轴，时间，粒度，天
+纵轴，各个object
+
+一个页面展示一个周期七天。
+前后切换一个周期。
+考虑到后续需要的目标追踪功能，需要一个可调节粒度和时间段的横轴。
+问题：如何将元素和轴坐标对应上。
