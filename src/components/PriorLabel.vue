@@ -1,5 +1,5 @@
 <template>
-  <Label v-on:click="toggle" :labelText="labelText" :backgroundColor="backgroundColor"></Label>
+  <Label @click="toggle" :labelText="labelText" :backgroundColor="backgroundColor"></Label>
   <span ref="toggle" class="hidden">
       <button ref="upgrade" v-on:click="upgrade">up</button>
       <button ref="downgrade" v-on:click="downgrade">down</button>
@@ -12,54 +12,49 @@ import Label from "./LabelBase.vue"
 export default{
     data(){
         return{
-            labelText: "LOW"
+            labelTexts: ['HIGH','MEDIUM','LOW'],
+            backgroundColors: ['#f4511e','#ffca28','#66bb6a']
         }
     },
     components:{
         Label
     },
+    props:{
+        priority: Number
+    },
+    emits:['update-priority'],
     computed:{
-        backgroundColor:function(){
-            if(this.labelText == "LOW"){
-                return "#66bb6a";    
-            }
-            if(this.labelText == "MEDIUM"){
-                return "#ffca28";
-            }
-            if(this.labelText == "HIGH"){
-                return "#f4511e";
-            }
-            return "black";
+        labelText: function(){
+            return this.priority < 3 ? this.labelTexts[this.priority] : "NULL";
+        },
+        backgroundColor: function(){
+            return this.priority < 3 ? this.backgroundColors[this.priority] : "black";
         }
     },
     methods:{
         toggle: function(event){
           var toggle = this.$refs.toggle;
           toggle.classList.toggle("hidden");
-          if(this.labelText == "LOW"){
+          if(this.priority == 2){
               this.$refs.downgrade.disabled = true;
           }
-          else if( this.labelText == "HIGH"){
+          else if( this.priority == 0){
               this.$refs.upgrade.disabled = true;
           }
         },
         upgrade: function(event){
-            if( this.labelText == "LOW" ){
-                this.labelText = "MEDIUM";
-                this.$refs.downgrade.disabled = false;
-            }
-            else if( this.labelText == "MEDIUM" ){
-                this.labelText = "HIGH";
+            var curPriority = this.priority-1;
+            this.$emit('update-priority',curPriority);
+            this.$refs.downgrade.disabled = false;
+            if(curPriority == 0){
                 this.$refs.upgrade.disabled = true;
             }
         },
         downgrade: function(event){
-            if( this.labelText == "HIGH" ){
-                this.labelText = "MEDIUM";
-                this.$refs.upgrade.disabled = false;
-            }
-            else if( this.labelText == "MEDIUM" ){
-                this.labelText = "LOW";
+            var curPriority = this.priority+1;
+            this.$emit('update-priority',curPriority);
+            this.$refs.upgrade.disabled = false;
+            if( curPriority == 2 ){
                 this.$refs.downgrade.disabled = true;
             }
         } 

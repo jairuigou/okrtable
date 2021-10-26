@@ -1,43 +1,41 @@
 <template>
   <table>
     <tr>
-      <td id="object">
+      <td class="object">
          <div v-html="object"> </div>
       </td>
-      <td id="level">
-         <DdlLabel :hours=20></DdlLabel>
+      <td class="priority">
+        <prior-label :priority="priority" @update-priority="updatePriority"></prior-label> 
       </td>
-      <td id="state">
+      <td class="state">
           status
       </td>
-      <td id="progress">
-        <span id="input" role="textbox" contenteditable> progress </span>
+      <td class="progress">
+        <span ref="progressinput" role="textbox" contenteditable> progress </span>
       </td>
     </tr>
   </table>
-<DdlLabel :hours="20"></DdlLabel>
-<DdlLabel :hours="200"></DdlLabel>
 
 </template>
 
 <script>
-import Label from "./Label.vue"
-import DdlLabel from "./DdlLabel.vue"
+import PriorLabel from "./PriorLabel.vue"
 
 export default{
     components:{
-        Label,
-        DdlLabel
+        PriorLabel
     },
     data(){
         return{
+            priority: 10,
             progStatus: "waiting",
             backgroundColor: "#fff",
-            object:"<h1>hello</h1><br>world"      
+            object:"<h1>hello</h1><br>world",
+            progText:"",
         }
     },
     mounted(){
-        var span = document.getElementById("input");
+        var span = this.$refs.progressinput;
         span.addEventListener('focus',this.contentEdit);
         span.addEventListener('blur',this.contentSaved);
     },
@@ -47,6 +45,9 @@ export default{
         },
         contentSaved(){
             console.log("saved");
+        },
+        updatePriority(newValue){
+            this.priority = newValue;
         }
     }
 }
@@ -63,14 +64,14 @@ td{
 table{
     width: 100%;
 }
-#object{
+.object{
     width:20%
 }
-#level,#state{
+.priority,.state{
     width:20%;
     text-align: center;    
 }
-#progress{
+.progress{
     width:40%;
     vertical-align: top;
 }
