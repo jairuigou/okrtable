@@ -1,18 +1,21 @@
 <template>
 <div id="div1">
-  <PriorLabel></PriorLabel>
+  <Object></Object> 
 </div>
+<Object></Object>
 </template>
 
 <script>
 import Object from "./components/Object.vue"
 import PriorLabel from "./components/PriorLabel.vue"
+import Label from "./components/LabelBase.vue"
 
 export default {
   name: 'App',
   components: {
     Object,
-    PriorLabel
+    PriorLabel,
+    Label
   },
   data(){
     return{}
@@ -22,8 +25,8 @@ export default {
 
 <style>
 #div1{
-  position: fixed;
+  position: absolute;
   top: 50%;
-  left: 50%;
+  width: 100%;
 }
 </style>

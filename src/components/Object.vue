@@ -8,7 +8,7 @@
         <prior-label :priority="priority" @update-priority="updatePriority"></prior-label> 
       </td>
       <td class="state">
-          status
+          <state-label :state="state" @update-state="updateState"></state-label>
       </td>
       <td class="progress">
         <span ref="progressinput" role="textbox" contenteditable> progress </span>
@@ -20,17 +20,19 @@
 
 <script>
 import PriorLabel from "./PriorLabel.vue"
+import StateLabel from './StateLabel.vue'
 
 export default{
     components:{
-        PriorLabel
+        PriorLabel,
+        StateLabel
     },
     data(){
         return{
-            priority: 10,
-            progStatus: "waiting",
+            priority: 2,
+            state: "WAITING",
             backgroundColor: "#fff",
-            object:"<h1>hello</h1><br>world",
+            object:"<h1>Object</h1><br>verbose",
             progText:"",
         }
     },
@@ -48,6 +50,9 @@ export default{
         },
         updatePriority(newValue){
             this.priority = newValue;
+        },
+        updateState(newValue){
+            this.state = newValue;
         }
     }
 }
@@ -59,7 +64,7 @@ table,td{
     border-collapse: collapse;
 }
 td{
-    background-color: aquamarine;
+    background-color: white;
 }
 table{
     width: 100%;
@@ -68,11 +73,11 @@ table{
     width:20%
 }
 .priority,.state{
-    width:20%;
+    width:10%;
     text-align: center;    
 }
 .progress{
-    width:40%;
+    width:50%;
     vertical-align: top;
 }
 span{

@@ -33,6 +33,11 @@ export default ({
         label.style.backgroundColor = this.backgroundColor;
         label.style.color = this.fontColor;
         label.style.fontSize = this.fontSize.toString() + "px";
+    },
+    watch:{
+        backgroundColor: function(val){
+            this.$refs.label.style.backgroundColor = val;
+        }
     }
 
 })
