@@ -1,6 +1,6 @@
 <template>
-  <table>
-    <tr>
+  <table ref="table">
+    <tr ref="tr">
       <td class="object">
          <div v-html="object"> </div>
       </td>
@@ -36,10 +36,21 @@ export default{
             progText:"",
         }
     },
+    props:{
+        isFirst: Boolean
+    },
     mounted(){
         var span = this.$refs.progressinput;
         span.addEventListener('focus',this.contentEdit);
         span.addEventListener('blur',this.contentSaved);
+
+        if( !this.isFirst ){
+            this.$refs.table.style.borderTop="none";
+            var nodes = this.$refs.tr.getElementsByTagName("td");
+            for(var i = 0;i<nodes.length;++i){
+                nodes[i].style.borderTop = "none";
+            }
+        }
     },
     methods:{
         contentEdit(){
