@@ -1,34 +1,79 @@
 <template>
-  <div ref="level1">level1</div>
-  <div ref="level2">level2</div>
+  <div ref="loading">Loading...</div>
+  <div ref="level0"></div>
+  <div ref="level1"></div>
 </template>
 
 <script>
 import Object from "./components/Object.vue"
-import PriorLabel from "./components/PriorLabel.vue"
-import Label from "./components/LabelBase.vue"
 import {createApp} from "vue"
+import axios from "axios"
 
 export default {
   name: 'App',
   components: {
     Object,
-    PriorLabel,
-    Label
   },
   data(){
     return{
-      objects: [{topic:"# Object1 blabla",level:0,priority:0,state:"WAITING",progress:"### hoho"} ]
+      level0Objects: [],
+      level1Objects: [] 
     }
   },
   mounted(){
-    console.log(this.data);
-    const div1 = document.createElement('div'); 
-    this.$refs.level1.appendChild(div1); 
-    createApp(Object,{isFirst:true}).mount(div1);
-    const div2 = document.createElement('div'); 
-    this.$refs.level1.appendChild(div2);
-    createApp(Object,{isFirst:false}).mount(div2);
+    var currentDate = new Date(Date.now());
+    var level0StartDate = this.date2Str(currentDate.getFullYear(),currentDate.getMonth() + 1,1);
+    var level0Duration = new Date(currentDate.getFullYear(),currentDate.getMonth()+1,0).getDate();
+    currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1);
+    var level1StartDate = this.date2Str(currentDate.getFullYear(),currentDate.getMonth() + 1,currentDate.getDate());
+    var level1Duration = 7;
+   
+    axios.post(process.env.VUE_APP_ROOTAPI,{
+      level: 0,
+      start: level0StartDate,
+      duration: level0Duration
+    })
+    .then(res=>{
+      this.mountObject(res.data,this.$refs.level0); 
+      this.level0Objects = res.data;
+      return axios.post(process.env.VUE_APP_ROOTAPI,{
+              level: 1,
+              start: level1StartDate,
+              duration: level1Duration});
+    })
+    .then(res=>{
+      this.mountObject(res.data,this.$refs.level1);
+      this.level1Objects = res.data;
+      if( res.data.length == 0 && this.$refs.level0.childNodes.length == 0){
+        this.$refs.loading.innerText = "No Object";
+      }  
+      else{
+        this.$refs.loading.hidden = true;
+      }
+    })
+    .catch(err=>{
+      console.log(err);
+      this.$refs.loading.innerText = "Connect error: " + process.env.VUE_APP_ROOTAPI;
+    })
+  },
+  methods:{
+    date2Str(year,month,day){
+      return year.toString().padStart(4,"0") + "-" +
+              month.toString().padStart(2,"0") + "-" +
+                day.toString().padStart(2,"0");
+    },
+    mountObject(data,mountPoint){
+      for(var i = 0;i<data.length;++i){
+        var newdiv = document.createElement('div');
+        mountPoint.appendChild(newdiv);
+        if( i == 0){
+          createApp(Object,{isFirst:true}).mount(newdiv);
+        }
+        else{
+          createApp(Object,{isFirst:false}).mount(newdiv);
+        }
+      }
+    }
   }
 }
 </script>
