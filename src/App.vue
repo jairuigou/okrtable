@@ -2,10 +2,12 @@
   <div ref="loading">Loading...</div>
   <div ref="level0"></div>
   <div ref="level1"></div>
+  <Menu id="menu" @popup-create="popupCreate"></Menu>
 </template>
 
 <script>
 import Object from "./components/Object.vue"
+import Menu from "./components/Menu.vue"
 import {createApp} from "vue"
 import axios from "axios"
 
@@ -13,6 +15,7 @@ export default {
   name: 'App',
   components: {
     Object,
+    Menu
   },
   data(){
     return{
@@ -21,6 +24,10 @@ export default {
     }
   },
   mounted(){
+    document.getElementById('menu').hidden = true;
+    document.onclick = this.hiddenMenu;
+    document.oncontextmenu = this.popupMenu;
+
     var currentDate = new Date(Date.now());
     var level0StartDate = this.date2Str(currentDate.getFullYear(),currentDate.getMonth() + 1,1);
     var level0Duration = new Date(currentDate.getFullYear(),currentDate.getMonth()+1,0).getDate();
@@ -54,7 +61,7 @@ export default {
     .catch(err=>{
       console.log(err);
       this.$refs.loading.innerText = "Connect error: " + process.env.VUE_APP_ROOTAPI;
-    })
+    });
   },
   methods:{
     date2Str(year,month,day){
@@ -73,15 +80,26 @@ export default {
           createApp(Object,{isFirst:false}).mount(newdiv);
         }
       }
+    },
+    popupMenu(e){
+      e.preventDefault();
+      var menu = document.getElementById('menu');
+      menu.hidden = false;
+      menu.style.left = e.pageX + "px";
+      menu.style.top = e.pageY + "px";
+    },
+    hiddenMenu(){
+      document.getElementById('menu').hidden = true;
+    },
+    popupCreate(){
+      console.log("popup create");
     }
   }
 }
 </script>
 
 <style>
-#div1{
+#menu{
   position: absolute;
-  top: 50%;
-  width: 100%;
 }
 </style>
