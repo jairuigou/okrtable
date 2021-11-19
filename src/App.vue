@@ -3,11 +3,15 @@
   <div ref="level0"></div>
   <div ref="level1"></div>
   <Menu id="menu" @popup-create="popupCreate"></Menu>
+  <div id="modal" class="modal">
+    <Modal @close-modal="closeModal"></Modal>
+  </div>
 </template>
 
 <script>
 import Object from "./components/Object.vue"
 import Menu from "./components/Menu.vue"
+import Modal from "./components/Modal.vue"
 import {createApp} from "vue"
 import axios from "axios"
 
@@ -15,7 +19,8 @@ export default {
   name: 'App',
   components: {
     Object,
-    Menu
+    Menu,
+    Modal
   },
   data(){
     return{
@@ -93,6 +98,10 @@ export default {
     },
     popupCreate(){
       console.log("popup create");
+      document.getElementById("modal").style.display = 'block';
+    },
+    closeModal(){
+      document.getElementById("modal").style.display = 'None';
     }
   }
 }
@@ -101,5 +110,18 @@ export default {
 <style>
 #menu{
   position: absolute;
+}
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 </style>
