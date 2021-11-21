@@ -2,7 +2,7 @@
   <table ref="table">
     <tr ref="tr">
       <td class="object">
-         <div v-html="object"> </div>
+         <div v-html="object"></div>
       </td>
       <td class="priority">
         <prior-label :priority="priority" @update-priority="updatePriority"></prior-label> 
@@ -11,7 +11,7 @@
           <state-label :state="state" @update-state="updateState"></state-label>
       </td>
       <td class="progress">
-        <span ref="progressinput" role="textbox" contenteditable> progress </span>
+          <input-area class="progress-editor" @update-content="updateContent"></input-area>
       </td>
     </tr>
   </table>
@@ -21,29 +21,28 @@
 <script>
 import PriorLabel from "./PriorLabel.vue"
 import StateLabel from './StateLabel.vue'
+import InputArea from "./InputArea.vue"
 
 export default{
     components:{
         PriorLabel,
-        StateLabel
+        StateLabel,
+        InputArea
     },
     data(){
         return{
+            id:"",
             priority: 2,
             state: "WAITING",
-            backgroundColor: "#fff",
+            ddl:"",
             object:"<h1>Object</h1><br>verbose",
-            progText:"",
+            progress:"",
         }
     },
     props:{
         isFirst: Boolean
     },
     mounted(){
-        var span = this.$refs.progressinput;
-        span.addEventListener('focus',this.contentEdit);
-        span.addEventListener('blur',this.contentSaved);
-
         if( !this.isFirst ){
             this.$refs.table.style.borderTop="none";
             var nodes = this.$refs.tr.getElementsByTagName("td");
@@ -53,17 +52,14 @@ export default{
         }
     },
     methods:{
-        contentEdit(){
-            console.log("editing");
-        },
-        contentSaved(){
-            console.log("saved");
-        },
         updatePriority(newValue){
             this.priority = newValue;
         },
         updateState(newValue){
             this.state = newValue;
+        },
+        updateContent(newValue){
+            this.progress = newValue;
         }
     }
 }
@@ -79,6 +75,7 @@ td{
 }
 table{
     width: 100%;
+    height: 150px;
 }
 .object{
     width:20%
@@ -91,8 +88,9 @@ table{
     width:50%;
     vertical-align: top;
 }
-span{
-    width:100%;
+.progress-editor{
+    width: 100%;
+    height: 100%;
+    border: none;
 }
-
 </style>

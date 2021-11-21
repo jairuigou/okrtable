@@ -3,9 +3,7 @@
 
       <div class="item">
         <label>Detail: </label>
-        <div class="inputbox">
-          <span class="input" ref="detailinput" role="textbox" contenteditable></span>
-        </div>
+        <input-area class="inputbox" @update-content="updateContent"></input-area>
       </div>
 
       <div class="item">
@@ -41,12 +39,14 @@
 
 <script>
 import PriorLabel from "./PriorLabel.vue";
-import StateLabel from "./StateLabel.vue"
+import StateLabel from "./StateLabel.vue";
+import InputArea from "./InputArea.vue";
 
 export default{
   components:{
     PriorLabel,
-    StateLabel
+    StateLabel,
+    InputArea
   },
   data(){
     return{
@@ -55,7 +55,6 @@ export default{
       state: "WAITING",
       ddl: "",
       detail: "",
-      red:"red"
     }
   },
   mounted(){
@@ -73,8 +72,10 @@ export default{
     updateState(newValue){
       this.state = newValue;
     },
+    updateContent(newValue){
+      this.detail = newValue;
+    },
     submit(){
-      this.detail = this.$refs.detailinput.innerText;
 
       console.log("level: " + this.level);
       console.log("prior: " + this.priority);
@@ -96,15 +97,9 @@ export default{
   border: 1px solid #888;
   width: 60%;
 }
-.input{
-  display: inline-block;
-  outline: none;
-  width: 100%; 
-  height: 100%;
-}
 .inputbox{
   border: 1px solid black;
-  height: 100px;
+  height: 250px;
   width: 80%;
   overflow: auto;
 }
