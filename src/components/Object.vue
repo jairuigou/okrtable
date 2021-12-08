@@ -10,6 +10,9 @@
       <td class="state">
           <state-label :state="state" @update-state="updateState"></state-label>
       </td>
+      <td class="ddl">
+          <ddl-label :ddl="ddl" @update-ddl="updateDdl"></ddl-label>
+      </td>
       <td class="progress">
           <input-area class="progress-editor" @update-content="updateContent"></input-area>
       </td>
@@ -21,12 +24,14 @@
 <script>
 import PriorLabel from "./PriorLabel.vue"
 import StateLabel from './StateLabel.vue'
+import DdlLabel from "./DdlLabel.vue"
 import InputArea from "./InputArea.vue"
 
 export default{
     components:{
         PriorLabel,
         StateLabel,
+        DdlLabel,
         InputArea
     },
     data(){
@@ -60,6 +65,9 @@ export default{
         },
         updateContent(newValue){
             this.progress = newValue;
+        },
+        updateDdl(newValue){
+            this.ddl = newValue;
         }
     }
 }
@@ -80,7 +88,7 @@ table{
 .object{
     width:20%
 }
-.priority,.state{
+.priority,.state,.ddl{
     width:10%;
     text-align: center;    
 }
