@@ -5,8 +5,6 @@
 <script>
 
 export default ({
-    date() {
-    },
     props:{
         labelText: {
             type: String,
@@ -49,4 +47,7 @@ export default ({
     padding-left: 5px;
     padding-right: 5px;
 } 
+span{
+    white-space: nowrap;
+}
 </style>

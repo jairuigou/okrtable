@@ -76,7 +76,7 @@ export default{
             }
             if( hours > 0 ){
                 if( minutes > 0 ){
-                    return hours.toString() + " hours" + minutes.toString() + " minutes";
+                    return hours.toString() + " hours " + minutes.toString() + " minutes";
                 }
                 return hours.toString() + " hours";
             }
