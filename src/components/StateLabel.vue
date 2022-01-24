@@ -1,6 +1,9 @@
 <template>
-  <Label @click="toggle" :labelText="state" :backgroundColor="backgroundColor"></Label>
-  <span ref="toggle" class="hidden"></span>
+  <Label @click="toggle" :labelText="state" :backgroundColor="backgroundColor" :clickable="modifiable"></Label>
+  <div ref="dropdown" class="dropdown">
+      <div ref="dropdown-content" class="dropdown-content hidden">
+      </div>
+  </div>
 </template>
 
 <script>
@@ -10,7 +13,7 @@ export default{
     data(){
         return{
             backgroundColors: {
-                "WAITING": "#909399",
+                "PENDING": "#909399",
                 "INPROG": "#409EFF",
                 "DONE": "#66bb6a",
                 "BLOCKED": "#f4511e",
@@ -26,7 +29,8 @@ export default{
         Label
     },
     props:{
-        state: String
+        state: String,
+        modifiable: Boolean
     },
     emits:['update-state'],
     computed:{
@@ -37,89 +41,83 @@ export default{
     watch:{
         state: function(newState){
             this.mountBtn(newState);
+        },
+        modifiable: function(){
+            this.watchModifiableHandler();
         }
     },
     mounted(){
         this.toInprogBtn.textContent = "INPROG";
-        this.toInprogBtn.addEventListener("click",this.toInprog);
+        this.toInprogBtn.addEventListener("click",this.changeState.bind(null,"INPROG"));
 
         this.toDoneBtn.textContent = "DONE";
-        this.toDoneBtn.addEventListener("click",this.toDone);
+        this.toDoneBtn.addEventListener("click",this.changeState.bind(null,"DONE"));
 
         this.toBlockedBtn.textContent = "BLOCKED";
-        this.toBlockedBtn.addEventListener("click",this.toBlocked);
+        this.toBlockedBtn.addEventListener("click",this.changeState.bind(null,"BLOCKED"));
 
         this.toKilledBtn.textContent = "KILLED";
-        this.toKilledBtn.addEventListener("click",this.toKilled);
+        this.toKilledBtn.addEventListener("click",this.changeState.bind(null,"KILLED"));
 
         this.mountBtn(this.state);
+        this.watchModifiableHandler();
     },
     methods:{
         toggle(){
-            var toggle = this.$refs.toggle;
-            toggle.classList.toggle("hidden");   
+            this.$refs['dropdown-content'].classList.toggle("hidden"); 
         },
-        toInprog(){
-            this.$emit('update-state',"INPROG");
-            this.$refs.toggle.classList.toggle("hidden");
-        },
-        toDone(){
-            this.$emit('update-state',"DONE");
-            this.$refs.toggle.classList.toggle("hidden");
-        },
-        toBlocked(){
-            this.$emit('update-state',"BLOCKED");
-            this.$refs.toggle.classList.toggle("hidden");
-        },
-        toKilled(){
-            this.$emit('update-state',"KILLED");
-            this.$refs.toggle.classList.toggle("hidden");
+        changeState(newval){
+            this.$emit('update-state',newval);
+            this.toggle();
         },
         mountBtn(state){
-            var toggle = this.$refs.toggle;
-            if( state == "WAITING" ){
-                if( !Array.from(toggle.childNodes).find(element => element == this.toInprogBtn) ) {
-                    toggle.appendChild(this.toInprogBtn);
-                }
-                if( !Array.from(toggle.childNodes).find(element => element == this.toDoneBtn ) ) {
-                    toggle.appendChild(this.toDoneBtn);
-                }
-                if( !Array.from(toggle.childNodes).find(element => element == this.toBlockedBtn ) ) {
-                    toggle.appendChild(this.toBlockedBtn);
-                }
-                if( !Array.from(toggle.childNodes).find(element => element == this.toKilledBtn ) ) {
-                    toggle.appendChild(this.toKilledBtn);
-                }
+            var dropdownContent = this.$refs['dropdown-content'];
+            if( state == "PENDING" ){
+                this.mountBtnHandler(dropdownContent,this.toInprogBtn,true);
+                this.mountBtnHandler(dropdownContent,this.toDoneBtn,true);
+                this.mountBtnHandler(dropdownContent,this.toBlockedBtn,true); 
+                this.mountBtnHandler(dropdownContent,this.toKilledBtn,true); 
             }
             else if( state == "INPROG" ){
-                if( Array.from(toggle.childNodes).find(element => element == this.toInprogBtn ) ) {
-                    toggle.removeChild(this.toInprogBtn);
-                }
-                if( !Array.from(toggle.childNodes).find(element => element == this.toDoneBtn ) ) {
-                    toggle.appendChild(this.toDoneBtn);
-                }
-                if( !Array.from(toggle.childNodes).find(element => element == this.toBlockedBtn ) ) {
-                    toggle.appendChild(this.toBlockedBtn);
-                }
-                if( !Array.from(toggle.childNodes).find(element => element == this.toKilledBtn ) ) {
-                    toggle.appendChild(this.toKilledBtn);
-                }   
+                this.mountBtnHandler(dropdownContent,this.toInprogBtn,false);
+                this.mountBtnHandler(dropdownContent,this.toDoneBtn,true);
+                this.mountBtnHandler(dropdownContent,this.toBlockedBtn,true); 
+                this.mountBtnHandler(dropdownContent,this.toKilledBtn,true); 
             }
             else if( state == "DONE" ){ 
-                while(toggle.firstChild){
-                    toggle.removeChild(toggle.firstChild);
+                while(dropdownContent.firstChild){
+                    dropdownContent.removeChild(dropdownContent.firstChild);
                 }
             }
             else if( state == "BLOCKED" ){
-                while(toggle.firstChild){
-                    toggle.removeChild(toggle.firstChild);
+                while(dropdownContent.firstChild){
+                    dropdownContent.removeChild(dropdownContent.firstChild);
                 }
-                toggle.appendChild(this.toKilledBtn);
+                dropdownContent.appendChild(this.toKilledBtn);
             }
             else if( state == "KILLED" ){
-                while(toggle.firstChild){
-                    toggle.removeChild(toggle.firstChild);
+                while(dropdownContent.firstChild){
+                    dropdownContent.removeChild(dropdownContent.firstChild);
                 }
+            }
+        },
+        mountBtnHandler: function(mountPoint,btn,flag){
+            if( Array.from(mountPoint.childNodes).find(element => element == btn) ) {
+                if( !flag ){
+                    mountPoint.removeChild(btn);
+                }
+            }
+            else if(flag){
+                mountPoint.appendChild(btn);
+            }
+        },
+        watchModifiableHandler: function(){
+            if( this.modifiable ){
+                this.$refs['dropdown-content'].style.removeProperty('display'); 
+                this.$refs['dropdown-content'].classList.add('hidden');
+            }
+            else{
+                this.$refs['dropdown-content'].style.display = 'none';
             }
         }
     }
@@ -128,7 +126,14 @@ export default{
 </script>
 
 <style scoped>
+.dropdown{
+    position: relative;
+}
 .hidden{
     display: none;
+}
+.dropdown-content{
+    position: absolute;
+    z-index: 1;
 }
 </style>

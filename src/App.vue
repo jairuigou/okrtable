@@ -1,8 +1,9 @@
 <template>
   <div ref="loading">Loading...</div>
   <div ref="level0"></div>
+  <div class="divide"></div>
   <div ref="level1"></div>
-  <Menu id="menu" @popup-create="popupCreate"></Menu>
+  <Menu id="menu" @popup-create="popupCreate" hidden=true></Menu>
   <div id="modal" class="modal">
     <Modal @close-modal="closeModal"></Modal>
   </div>
@@ -12,6 +13,7 @@
 import Object from "./components/Object.vue"
 import Menu from "./components/Menu.vue"
 import Modal from "./components/Modal.vue"
+import InputArea from "./components/InputArea.vue"
 import {createApp} from "vue"
 import axios from "axios"
 
@@ -20,7 +22,8 @@ export default {
   components: {
     Object,
     Menu,
-    Modal
+    Modal,
+    InputArea
   },
   data(){
     return{
@@ -29,7 +32,6 @@ export default {
     }
   },
   mounted(){
-    document.getElementById('menu').hidden = true;
     document.onclick = this.hiddenMenu;
     document.oncontextmenu = this.popupMenu;
 
@@ -79,10 +81,10 @@ export default {
         var newdiv = document.createElement('div');
         mountPoint.appendChild(newdiv);
         if( i == 0){
-          createApp(Object,{isFirst:true}).mount(newdiv);
+          createApp(Object,{initData:data[i],isFirst:true}).mount(newdiv);
         }
         else{
-          createApp(Object,{isFirst:false}).mount(newdiv);
+          createApp(Object,{initData:data[i],isFirst:false}).mount(newdiv);
         }
       }
     },
@@ -123,5 +125,8 @@ export default {
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.divide{
+  height: 50px
 }
 </style>

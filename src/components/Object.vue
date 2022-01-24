@@ -2,16 +2,16 @@
   <table ref="table">
     <tr ref="tr">
       <td class="object">
-         <div v-html="object"></div>
+         <div v-html="detail"></div>
       </td>
       <td class="priority">
-        <prior-label :priority="priority" @update-priority="updatePriority"></prior-label> 
+        <prior-label :priority="priority" :modifiable="modifiable" @update-priority="updatePriority"></prior-label> 
       </td>
       <td class="state">
-          <state-label :state="state" @update-state="updateState"></state-label>
+        <state-label :state="state" :modifiable="modifiable" @update-state="updateState"></state-label>
       </td>
       <td class="ddl">
-          <ddl-label :ddl="ddl" @update-ddl="updateDdl"></ddl-label>
+          <ddl-label :ddl="ddl" :modifiable="modifiable" @update-ddl="updateDdl"></ddl-label>
       </td>
       <td class="progress">
           <input-area class="progress-editor" @update-content="updateContent"></input-area>
@@ -26,6 +26,7 @@ import PriorLabel from "./PriorLabel.vue"
 import StateLabel from './StateLabel.vue'
 import DdlLabel from "./DdlLabel.vue"
 import InputArea from "./InputArea.vue"
+import axios from 'axios'
 
 export default{
     components:{
@@ -37,14 +38,15 @@ export default{
     data(){
         return{
             id:"",
-            priority: 2,
-            state: "WAITING",
+            priority: 0,
+            state: "",
             ddl:"",
-            object:"<h1>Object</h1><br>verbose",
-            progress:"",
+            detail:"",
+            progress:""
         }
     },
     props:{
+        initData: Object, 
         isFirst: Boolean
     },
     mounted(){
@@ -55,19 +57,94 @@ export default{
                 nodes[i].style.borderTop = "none";
             }
         }
+        this.id = this.initData.id;
+        this.priority = this.initData.priority;
+        this.state = this.initData.state;
+        this.ddl = this.initData.ddl;
+        this.detail = this.initData.detail;
+        this.progress = this.initData.progress;
+    },
+    computed:{
+        modifiable: function(){
+            return this.state == "PENDING" || this.state == "INPROG";
+        }
     },
     methods:{
         updatePriority(newValue){
-            this.priority = newValue;
+            axios.post(process.env.VUE_APP_ROOTAPI + "/updateprior",{
+                id: this.id,
+                priority: newValue
+            })
+            .then(res=>{
+                if( 'success' in res.data){
+                    this.priority = newValue;
+                }
+                else{
+                    // todo error feedback
+                    console.log(res.data);
+                }
+            })
+            .catch(err=>{
+                // todo error feedback
+                console.log(res.data);
+            });
         },
         updateState(newValue){
-            this.state = newValue;
+            axios.post(process.env.VUE_APP_ROOTAPI + "/updatestate",{
+                id: this.id,
+                state: newValue
+            })
+            .then(res=>{
+                if( 'success' in res.data){
+                    this.state = newValue;
+                }
+                else{
+                    // todo error feedback
+                    console.log(res.data);
+                }
+            })
+            .catch(err=>{
+                // todo error feedback
+                console.log("update state error");
+            });           
         },
         updateContent(newValue){
-            this.progress = newValue;
+            axios.post(process.env.VUE_APP_ROOTAPI + "/updateprogress",{
+                id: this.id,
+                progress: newValue
+            })
+            .then(res=>{
+                if( 'success' in res.data){
+                    this.progress = newValue;
+                }
+                else{
+                    // todo error feedback
+                    console.log(res.data);
+                }
+            })
+            .catch(err=>{
+                // todo error feedback
+                console.log(res.data);
+            });
         },
         updateDdl(newValue){
-            this.ddl = newValue;
+            axios.post(process.env.VUE_APP_ROOTAPI + "/updateddl",{
+                id: this.id,
+                ddl: newValue
+            })
+            .then(res=>{
+                if( 'success' in res.data){
+                    this.ddl = newValue;
+                }
+                else{
+                    // todo error feedback
+                    console.log(res.data);
+                }
+            })
+            .catch(err=>{
+                // todo error feedback
+                console.log(res.data);
+            });           
         }
     }
 }

@@ -1,8 +1,10 @@
 <template>
     <div>
-        <Label :title="ddl" class="dropdown" @click="toggle" :labelText="labelText" :backgroundColor="backgroundColor"></Label>
-        <div ref="dropdown" class="dropdown-content hidden">
-            <input type="datetime-local" v-model="date" @change="updateDdl">
+        <Label :title="ddl" @click="toggle" :labelText="labelText" :backgroundColor="backgroundColor" :clickable="modifiable"></Label>
+        <div ref="dropdown" class="dropdown"> 
+            <div ref="dropdown-content" class="dropdown-content hidden">
+                <input type="datetime-local" v-model="date" @change="updateDdl">
+            </div>
         </div>
     </div>
 </template>
@@ -14,7 +16,7 @@ export default{
     data(){
         return {
             backgroundColor: "#409EFF",
-            backgroundColors: ['#f4511e','#ffca28',"#409EFF"],
+            backgroundColors: ['#f4511e','#ffca28',"#409EFF","#909399"],
             date: "",
             labelText: "NULL"
         }
@@ -23,13 +25,19 @@ export default{
         Label
     },
     props:{
-        ddl: String
+        ddl: String,
+        modifiable: Boolean
     },
     emits:['update-ddl'],
     watch:{
         ddl: function(){
             if( !this.ddl ){
                 this.labelText = "NULL";
+                return;
+            }
+            if( !this.modifiable ){
+                this.labelText = this.ddl.substring(0,this.ddl.length-3);
+                this.backgroundColor = this.backgroundColors[3];
                 return;
             }
             var ddlDate = new Date(this.ddl);
@@ -47,11 +55,17 @@ export default{
                 this.backgroundColor = this.backgroundColors[2];
                 this.labelText = this.ms2Str(diffTime) + " left";
             }
+        },
+        modifiable: function(){
+            this.watchModifiableHandler();
         }
+    },
+    mounted(){
+        this.watchModifiableHandler();
     },
     methods:{
         toggle(){
-            this.$refs.dropdown.classList.toggle("hidden");
+            this.$refs['dropdown-content'].classList.toggle("hidden");
         },
         updateDdl(){
             this.toggle();
@@ -84,6 +98,15 @@ export default{
                 return minutes.toString() + " minutes";
             }
             return "less than 1 minute";
+        },
+        watchModifiableHandler: function(){
+            if( this.modifiable ){
+                this.$refs['dropdown-content'].style.removeProperty('display'); 
+                this.$refs['dropdown-content'].classList.add('hidden');
+            }
+            else{
+                this.$refs['dropdown-content'].style.display = 'none';
+            }
         }
     }
 }
