@@ -2,7 +2,7 @@
   <table ref="table">
     <tr ref="tr">
       <td class="object">
-         <div v-html="detail"></div>
+         <div v-html="compiled"></div>
       </td>
       <td class="priority">
         <prior-label :priority="priority" :modifiable="modifiable" @update-priority="updatePriority"></prior-label> 
@@ -14,7 +14,7 @@
           <ddl-label :ddl="ddl" :modifiable="modifiable" @update-ddl="updateDdl"></ddl-label>
       </td>
       <td class="progress">
-          <input-area class="progress-editor" :content="progress" @update-content="updateProgress"></input-area>
+          <input-area class="progress-editor" :content="progress" :modifiable="modifiable" @update-content="updateProgress"></input-area>
       </td>
     </tr>
   </table>
@@ -78,6 +78,9 @@ export default{
     computed:{
         modifiable: function(){
             return this.state == "PENDING" || this.state == "INPROG";
+        },
+        compiled: function(){
+            return require('markdown-it')().render(this.detail);
         }
     },
     methods:{

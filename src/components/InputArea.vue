@@ -19,7 +19,8 @@ export default{
         content:{
             type: String,
             default: ""
-        }
+        },
+        modifiable: Boolean
     },
     emits:['update-content'],
     computed:{
@@ -43,6 +44,9 @@ export default{
             this.$emit('update-content',this.buffer);
         },
         editing(){
+            if( !this.modifiable ){
+                return;
+            }
             this.$refs.editorborder.style.display = "block";
             this.$refs.editor.style.display = "block";
             this.$refs.editor.focus();
