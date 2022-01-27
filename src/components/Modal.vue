@@ -3,7 +3,7 @@
 
       <div class="item">
         <label>Detail: </label>
-        <input-area class="inputbox" @update-content="updateContent"></input-area>
+        <input-area class="inputbox" :modifiable="true" @update-content="updateContent"></input-area>
       </div>
 
       <div class="item">
