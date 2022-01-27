@@ -16,12 +16,12 @@
 
       <div class="item">
         <label>Priority: </label>
-        <prior-label :priority="priority" @update-priority="updatePriority"></prior-label> 
+        <prior-label :priority="priority" :modifiable="true" @update-priority="updatePriority"></prior-label> 
       </div>
 
       <div class="item">
         <label>State: </label>
-        <state-label :state="state" @update-state="updateState"></state-label>
+        <state-label :state="state" :modifiable="true" @update-state="updateState"></state-label>
       </div>
       
       <div class="item">  
@@ -41,6 +41,7 @@
 import PriorLabel from "./PriorLabel.vue";
 import StateLabel from "./StateLabel.vue";
 import InputArea from "./InputArea.vue";
+import axios from 'axios';
 
 export default{
   components:{
@@ -52,11 +53,12 @@ export default{
     return{
       level: 1,
       priority: 2,
-      state: "WAITING",
+      state: "PENDING",
       ddl: "",
       detail: "",
     }
   },
+  emits:['refresh','close-modal'],
   mounted(){
     var currentDate = new Date(Date.now());
     // todo timezone
@@ -66,6 +68,14 @@ export default{
 
   },
   methods:{
+    date2Str(date){
+      return date.getFullYear().toString().padStart(4,"0") + "-" + 
+              (date.getMonth()+1).toString().padStart(2,"0") + "-" +
+                date.getDate().toString().padStart(2,"0") + " " + 
+                  date.getHours().toString().padStart(2,"0") + ":" +
+                    date.getMinutes().toString().padStart(2,"0") + ":" +
+                      date.getSeconds().toString().padStart(2,"0"); 
+    },
     updatePriority(newValue){
       this.priority = newValue;
     },
@@ -76,12 +86,24 @@ export default{
       this.detail = newValue;
     },
     submit(){
-
-      console.log("level: " + this.level);
-      console.log("prior: " + this.priority);
-      console.log("state: " + this.state);
-      console.log("ddl: " + this.ddl);
-      console.log("detail: " + this.detail); 
+      axios.post(process.env.VUE_APP_ROOTAPI + "/create",{
+        detail: this.detail,
+        level: this.level,
+        priority: this.priority,
+        state: this.state,
+        ddl: this.date2Str(new Date(this.ddl))
+      })
+      .then(res=>{
+        if( 'success' in res.data ){
+          this.$emit('refresh');
+        }
+        else{
+          console.log(res.data);
+        } 
+      })
+      .catch(err=>{
+        console.log(err);
+      });
     }
   }
 }

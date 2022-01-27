@@ -14,7 +14,7 @@
 
   <Menu id="menu" @popup-create="popupCreate" hidden=true></Menu>
   <div id="modal" class="modal">
-    <Modal @close-modal="closeModal"></Modal>
+    <Modal @close-modal="closeModal" @refresh="refresh"></Modal>
   </div>
 </template>
 
@@ -84,7 +84,6 @@ export default {
       document.getElementById('menu').hidden = true;
     },
     popupCreate(){
-      console.log("popup create");
       document.getElementById("modal").style.display = 'block';
     },
     closeModal(){
@@ -183,6 +182,9 @@ export default {
     getWeekNumber(date){
       return (Math.ceil((date.getDate() - date.getDay())/7) + (date.getDay() > 0 ? 1: 0));
     },
+    refresh(){
+      window.location.reload();
+    }
   }
 }
 </script>
@@ -190,6 +192,7 @@ export default {
 <style>
 #menu{
   position: absolute;
+  background-color: #fefefe;
 }
 .modal {
   display: none; /* Hidden by default */
