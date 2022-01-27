@@ -1,7 +1,7 @@
 <template>
     <div ref="border" class="border" @dblclick="editing">
         <div class="editorborder" ref="editorborder">
-            <textarea class="editor" ref="editor" :value="input"
+            <textarea class="editor" ref="editor" :value="buffer"
                 @blur="exiteditor" @input="handle"></textarea>
         </div>
         <div class="preview" ref="preview" v-html="compiled"></div>
@@ -12,21 +12,35 @@
 export default{
     data(){
         return{
-            input: ""
+            buffer: ""
+        }
+    },
+    props:{
+        content:{
+            type: String,
+            default: ""
         }
     },
     emits:['update-content'],
     computed:{
         compiled: function(){
-            return require('markdown-it')().render(this.input);
+            return require('markdown-it')().render(this.buffer);
         }
+    },
+    watch:{
+        content: function(){
+            this.buffer = this.content;
+        }
+    },
+    mounted(){
+        this.buffer = this.content;
     },
     methods:{
         exiteditor(){
             this.$refs.editor.style.display = "none";
             this.$refs.editorborder.style.display = "none";
             this.$refs.preview.style.width = "100%";
-            this.$emit('update-content',this.input);
+            this.$emit('update-content',this.buffer);
         },
         editing(){
             this.$refs.editorborder.style.display = "block";
@@ -35,7 +49,7 @@ export default{
             this.$refs.preview.style.width = "50%";
         },
         handle(e){
-            this.input = e.target.value;
+            this.buffer = e.target.value;
         },
     }
 }

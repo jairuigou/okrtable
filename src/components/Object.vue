@@ -14,7 +14,7 @@
           <ddl-label :ddl="ddl" :modifiable="modifiable" @update-ddl="updateDdl"></ddl-label>
       </td>
       <td class="progress">
-          <input-area class="progress-editor" @update-content="updateContent"></input-area>
+          <input-area class="progress-editor" :content="progress" @update-content="updateProgress"></input-area>
       </td>
     </tr>
   </table>
@@ -62,7 +62,18 @@ export default{
         this.state = this.initData.state;
         this.ddl = this.initData.ddl;
         this.detail = this.initData.detail;
-        this.progress = this.initData.progress;
+        axios.post(process.env.VUE_APP_ROOTAPI + "/getprogress",{
+                id: this.id,
+            })
+            .then(res=>{
+                if( res.data.length != 0){
+                    this.progress = res.data[0].progress;
+                }
+            })
+            .catch(err=>{
+                // todo error feedback
+                console.log(err);
+            });
     },
     computed:{
         modifiable: function(){
@@ -108,7 +119,8 @@ export default{
                 console.log("update state error");
             });           
         },
-        updateContent(newValue){
+        updateProgress(newValue){
+            console.log("update ",this.id," progress:",newValue);
             axios.post(process.env.VUE_APP_ROOTAPI + "/updateprogress",{
                 id: this.id,
                 progress: newValue
