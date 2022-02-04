@@ -27,6 +27,7 @@ import StateLabel from './StateLabel.vue'
 import DdlLabel from "./DdlLabel.vue"
 import InputArea from "./InputArea.vue"
 import axios from 'axios'
+import {date2Str} from '../utils'
 
 export default{
     components:{
@@ -145,7 +146,7 @@ export default{
         updateDdl(newValue){
             axios.post(process.env.VUE_APP_ROOTAPI + "/updateddl",{
                 id: this.id,
-                ddl: newValue
+                ddl: date2Str(new Date(newValue))
             })
             .then(res=>{
                 if( 'success' in res.data){
