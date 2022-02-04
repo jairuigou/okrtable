@@ -42,6 +42,7 @@ import PriorLabel from "./PriorLabel.vue";
 import StateLabel from "./StateLabel.vue";
 import InputArea from "./InputArea.vue";
 import axios from 'axios';
+import {date2Str} from '../utils'
 
 export default{
   components:{
@@ -68,14 +69,6 @@ export default{
 
   },
   methods:{
-    date2Str(date){
-      return date.getFullYear().toString().padStart(4,"0") + "-" + 
-              (date.getMonth()+1).toString().padStart(2,"0") + "-" +
-                date.getDate().toString().padStart(2,"0") + " " + 
-                  date.getHours().toString().padStart(2,"0") + ":" +
-                    date.getMinutes().toString().padStart(2,"0") + ":" +
-                      date.getSeconds().toString().padStart(2,"0"); 
-    },
     updatePriority(newValue){
       this.priority = newValue;
     },
@@ -91,7 +84,7 @@ export default{
         level: this.level,
         priority: this.priority,
         state: this.state,
-        ddl: this.date2Str(new Date(this.ddl))
+        ddl: date2Str(new Date(this.ddl))
       })
       .then(res=>{
         if( 'success' in res.data ){

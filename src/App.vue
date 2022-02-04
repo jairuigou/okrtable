@@ -26,6 +26,7 @@ import InputArea from "./components/InputArea.vue"
 import Navigate from "./components/Navigate.vue"
 import {createApp} from "vue"
 import axios from "axios"
+import {date2Str} from './utils'
 
 export default {
   name: 'App',
@@ -53,11 +54,6 @@ export default {
 
   },
   methods:{
-    date2Str(date){
-      return date.getFullYear().toString().padStart(4,"0") + "-" +
-              (date.getMonth()+1).toString().padStart(2,"0") + "-" +
-                date.getDate().toString().padStart(2,"0");
-    },
     mountObject(data,mountPoint){
       while( mountPoint.firstChild ){
         mountPoint.removeChild(mountPoint.firstChild);
@@ -139,7 +135,7 @@ export default {
     loadMonthObjectInfo(startDate){
       axios.post(process.env.VUE_APP_ROOTAPI,{
         level: 0,
-        start: this.date2Str(startDate),
+        start: date2Str(startDate).substring(0,10),
         duration: this.getMonthDay(startDate)
       })
       .then(res=>{
@@ -153,7 +149,7 @@ export default {
     loadWeekObjectInfo(startDate){
       axios.post(process.env.VUE_APP_ROOTAPI,{
         level: 1,
-        start: this.date2Str(startDate),
+        start: date2Str(startDate).substring(0,10),
         duration: this.getWeekDay(startDate)
       })
       .then(res=>{
