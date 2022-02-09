@@ -31,6 +31,7 @@ export default{
     emits:['update-ddl'],
     watch:{
         ddl: function(){
+            this.date = this.ddl.split(' ').join('T');
             if( !this.ddl ){
                 this.labelText = "NULL";
                 return;
