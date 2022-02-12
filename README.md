@@ -1,14 +1,27 @@
-# Usage
-First, create a env file named `.env.local` and set environment variables
+# OKR-Table
+An vue application for object management.
+
+## Getting Started
+### Prerequisites
+Create a file named `.env.local` under the project directory and set environment variables. `VUE_APP_ROOTAPI` is the backend api address.
 ```
 # .env.local
 VUE_APP_ROOTAPI=http://localhost:3000
 ```
-Next, build images
+### Build an image for development
+```
+$ docker build -t okrtable/okrtable-app
+```
+Start app container.
+```
+$ docker run -p 8080:8080 -v ${PWD}:/usr/src/app --name okrtable-app-1 -d okrtable/okrtable-app
+```
+
+### Build an image for production
 ```
 $ docker build -t okrtable/okrtable-app -f dockerfile.production
 ```
-Finally, start app container
+Start app container.
 ```
-$ docker run -it -p 8080:80 --rm --name okrtable-app-1 -d okrtable/okrtable-app  
+$ docker run -it -p 8080:80 --name okrtable-app-1 -d okrtable/okrtable-app  
 ```
