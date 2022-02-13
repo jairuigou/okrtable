@@ -16,6 +16,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Create .env.local file
+        run: |
+          echo VUE_APP_ROOTAPI=${{ secrets.BACKEND_URL }} >> .env.local
+          cat .env.local
         
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -35,6 +40,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
       -
         name: Build and push
         uses: docker/build-push-action@v2
