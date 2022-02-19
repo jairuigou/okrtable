@@ -1,5 +1,5 @@
 # OKR-Table
-An vue application for object management.
+A vue application for object management.
 
 ## Getting Started
 ### Prerequisites
@@ -10,7 +10,7 @@ VUE_APP_ROOTAPI=http://localhost:3000
 ```
 ### Build an image for development
 ```
-$ docker build -t okrtable/okrtable-app
+$ docker build -t okrtable/okrtable-app .
 ```
 Start app container.
 ```
