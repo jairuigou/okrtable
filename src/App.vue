@@ -1,16 +1,10 @@
 <template>
-  <div class="center">
-    <Navigate size="medium" @navigate-change="monthNavChanged" 
-        :value="monthObjectStartDate" :textGen="monthNavGen" :toNext="monthNavToNext" :toPre="monthNavToPre"></Navigate>
+  <div class="container">
+    <month-navigate class="monthnav" :date="monthObjectStartDate" @navigate-change="monthNavChanged"></month-navigate>
+    <div ref="monthtable" class="monthtable"></div>
+    <week-navigate class="weeknav" :date="weekObjectStartDate" @navigate-change="weekNavChanged"></week-navigate>
+    <div ref="weektable" class="weektable"></div>
   </div>
-  <div ref="month"></div>
-  <div class="divide"></div>
-
-  <div class="center">
-    <Navigate @navigate-change="weekNavChanged" 
-        :value="weekObjectStartDate" :textGen="weekNavGen" :toNext="weekNavToNext" :toPre="weekNavToPre"></Navigate>
-  </div>
-  <div ref="week"></div>
 
   <Menu id="menu" @popup-create="popupCreate" hidden=true></Menu>
   <div id="modal" class="modal">
@@ -23,10 +17,11 @@ import Object from "./components/Object.vue"
 import Menu from "./components/Menu.vue"
 import Modal from "./components/Modal.vue"
 import InputArea from "./components/InputArea.vue"
-import Navigate from "./components/Navigate.vue"
+import WeekNavigate from "./components/WeekNavigate.vue"
+import MonthNavigate from "./components/MonthNavigate.vue"
 import {createApp} from "vue"
 import axios from "axios"
-import {date2Str} from './utils'
+import {date2Str,moveToMonthStart,moveToWeekStart,getMonthDay,getWeekDay} from './utils'
 
 export default {
   name: 'App',
@@ -35,7 +30,8 @@ export default {
     Menu,
     Modal,
     InputArea,
-    Navigate
+    WeekNavigate,
+    MonthNavigate
   },
   data(){
     return{
@@ -47,11 +43,10 @@ export default {
     document.onclick = this.hiddenMenu;
     document.oncontextmenu = this.popupMenu;
 
-    this.moveToMonthStart(this.monthObjectStartDate);
-    this.moveToWeekStart(this.weekObjectStartDate);
+    moveToMonthStart(this.monthObjectStartDate);
+    moveToWeekStart(this.weekObjectStartDate);
     this.loadMonthObjectInfo(this.monthObjectStartDate);
     this.loadWeekObjectInfo(this.weekObjectStartDate);
-
   },
   methods:{
     mountObject(data,mountPoint){
@@ -85,37 +80,12 @@ export default {
     closeModal(){
       document.getElementById("modal").style.display = 'None';
     },
-    monthNavGen(date){
-      return date.getFullYear() + "-" + (date.getMonth() + 1).toString().padStart(2,'0');
-    },
-    monthNavToNext(date){
-      return new Date(date.getFullYear(),date.getMonth()+1,1);
-    },
-    monthNavToPre(date){
-      return new Date(date.getFullYear(),date.getMonth()-1,1);
-    },
-    weekNavGen(date){
-      return "week " + this.getWeekNumber(date);
-    },
-    weekNavToNext(date){
-      var newDate = new Date(date);
-      newDate.setDate(newDate.getDate() + this.getWeekDay(newDate));
-      return newDate;
-    },
-    weekNavToPre(date){
-      var newDate = new Date(date);
-      this.moveToWeekStart(newDate);
-      newDate.setDate(newDate.getDate()-1);
-      this.moveToWeekStart(newDate);
-      return newDate;
-    },
     monthNavChanged(newMonthDate){
       if( newMonthDate.valueOf() == this.monthObjectStartDate.valueOf() ){
         return;
       }
-      this.moveToMonthStart(newMonthDate);
+      moveToMonthStart(newMonthDate);
       var newWeekDate = new Date(newMonthDate);
-
       this.loadMonthObjectInfo(newMonthDate);
       this.loadWeekObjectInfo(newWeekDate);
     },
@@ -123,8 +93,7 @@ export default {
       if( newWeekDate.valueOf() == this.weekObjectStartDate.valueOf() ){
         return;
       }
-      this.moveToWeekStart(newWeekDate);
-
+      moveToWeekStart(newWeekDate);
       if( this.monthObjectStartDate.getMonth() != newWeekDate.getMonth() 
             || this.monthObjectStartDate.getFullYear() != newWeekDate.getFullYear()){
         var newMonthDate = new Date(newWeekDate.getFullYear(),newWeekDate.getMonth(),1);
@@ -136,10 +105,10 @@ export default {
       axios.post(process.env.VUE_APP_ROOTAPI,{
         level: 0,
         start: date2Str(startDate).substring(0,10),
-        duration: this.getMonthDay(startDate)
+        duration: getMonthDay(startDate)
       })
       .then(res=>{
-        this.mountObject(res.data,this.$refs.month); 
+        this.mountObject(res.data,this.$refs.monthtable); 
         this.monthObjectStartDate = startDate;
       })
       .catch(err=>{
@@ -150,33 +119,15 @@ export default {
       axios.post(process.env.VUE_APP_ROOTAPI,{
         level: 1,
         start: date2Str(startDate).substring(0,10),
-        duration: this.getWeekDay(startDate)
+        duration: getWeekDay(startDate)
       })
       .then(res=>{
-        this.mountObject(res.data,this.$refs.week); 
+        this.mountObject(res.data,this.$refs.weektable); 
         this.weekObjectStartDate = startDate;
       })
       .catch(err=>{
         console.log("loadWeek error",err);
       })
-    },
-    moveToMonthStart(date){
-      date.setDate(1);
-    },
-    moveToWeekStart(date){
-      if( date.getDay() == 1 || date.getDate() == 1){
-        return;
-      }
-      date.setDate(date.getDate() - Math.min(date.getDate(),date.getDay() == 0 ? 7: date.getDay()) + 1);
-    },
-    getMonthDay(date){
-      return new Date(date.getFullYear(),date.getMonth()+1,0).getDate();
-    },
-    getWeekDay(date){
-      return Math.min((7-date.getDay()) % 7 + 1,this.getMonthDay(date) - date.getDate() + 1);
-    },
-    getWeekNumber(date){
-      return (Math.ceil((date.getDate() - date.getDay())/7) + (date.getDay() > 0 ? 1: 0));
     },
     refresh(){
       window.location.reload();
@@ -186,6 +137,28 @@ export default {
 </script>
 
 <style>
+.container{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas: 
+    ". monthnav ."
+    "monthtable monthtable monthtable"
+    ". weeknav ."
+    "weektable weektable weektable";
+}
+.monthnav{
+  grid-area: monthnav;
+}
+.weeknav{
+  grid-area: weeknav;
+}
+.monthtable{
+  grid-area: monthtable;
+}
+.weektable{
+  grid-area: weektable;
+}
 #menu{
   position: absolute;
   background-color: #fefefe;
@@ -202,11 +175,5 @@ export default {
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-.divide{
-  height: 50px
-}
-.center{
-  text-align: center;
 }
 </style>
