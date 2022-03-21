@@ -3,7 +3,7 @@
 
       <div class="item">
         <label>Detail: </label>
-        <Editor class="inputbox" @update-content="updateContent"></Editor>
+        <Editor class="inputbox" :content="detail" @update-content="updateContent"></Editor>
       </div>
 
       <div class="item">
@@ -30,7 +30,7 @@
       </div>
 
       
-      <button class="cancelbutton" @click="$emit('close-modal')">Cancel</button>
+      <button class="cancelbutton" @click="cancel">Cancel</button>
       <button class="createbutton" @click="submit">Create</button>
       
 
@@ -76,6 +76,10 @@ export default{
     },
     updateContent(newValue){
       this.detail = newValue;
+    },
+    cancel(){
+      this.$emit('close-modal');
+      this.detail = "";
     },
     submit(){
       axios.post(process.env.VUE_APP_ROOTAPI + "/create",{
