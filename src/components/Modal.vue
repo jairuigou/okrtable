@@ -3,7 +3,7 @@
 
       <div class="item">
         <label>Detail: </label>
-        <input-area class="inputbox" :modifiable="true" @update-content="updateContent"></input-area>
+        <Editor class="inputbox" @update-content="updateContent"></Editor>
       </div>
 
       <div class="item">
@@ -40,7 +40,7 @@
 <script>
 import PriorLabel from "./PriorLabel.vue";
 import StateLabel from "./StateLabel.vue";
-import InputArea from "./InputArea.vue";
+import Editor from "./Editor.vue";
 import axios from 'axios';
 import {date2Str} from '../utils'
 
@@ -48,7 +48,7 @@ export default{
   components:{
     PriorLabel,
     StateLabel,
-    InputArea
+    Editor
   },
   data(){
     return{
@@ -62,7 +62,6 @@ export default{
   emits:['refresh','close-modal'],
   mounted(){
     var currentDate = new Date(Date.now());
-    // todo timezone
     currentDate.setHours(currentDate.getHours() + 8);
     this.ddl = currentDate.toISOString();
     this.ddl = this.ddl.substring(0,this.ddl.length-8);

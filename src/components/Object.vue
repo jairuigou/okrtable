@@ -14,7 +14,7 @@
           <ddl-label :ddl="ddl" :modifiable="modifiable" @update-ddl="updateDdl"></ddl-label>
       </td>
       <td class="progress">
-          <input-area class="progress-editor" :content="progress" :modifiable="modifiable" @update-content="updateProgress"></input-area>
+          <Editor class="progress-editor" :content="progress" :modifiable="modifiable" @update-content="updateProgress"></Editor>
       </td>
     </tr>
   </table>
@@ -25,7 +25,7 @@
 import PriorLabel from "./PriorLabel.vue"
 import StateLabel from './StateLabel.vue'
 import DdlLabel from "./DdlLabel.vue"
-import InputArea from "./InputArea.vue"
+import Editor from "./Editor.vue"
 import axios from 'axios'
 import {date2Str} from '../utils'
 
@@ -34,7 +34,7 @@ export default{
         PriorLabel,
         StateLabel,
         DdlLabel,
-        InputArea
+        Editor
     },
     data(){
         return{
@@ -43,7 +43,7 @@ export default{
             state: "",
             ddl:"",
             detail:"",
-            progress:""
+            progress:"",
         }
     },
     props:{

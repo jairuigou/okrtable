@@ -16,7 +16,6 @@
 import Object from "./components/Object.vue"
 import Menu from "./components/Menu.vue"
 import Modal from "./components/Modal.vue"
-import InputArea from "./components/InputArea.vue"
 import WeekNavigate from "./components/WeekNavigate.vue"
 import MonthNavigate from "./components/MonthNavigate.vue"
 import {createApp} from "vue"
@@ -29,7 +28,6 @@ export default {
     Object,
     Menu,
     Modal,
-    InputArea,
     WeekNavigate,
     MonthNavigate
   },
