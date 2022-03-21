@@ -87,7 +87,6 @@ export default {
       var totalMonthday = getMonthDay(tmpDate);
       var end = Math.min(7,totalMonthday-tmpDate.getDate()+1);
       var dayboxs = document.getElementsByClassName("daybox");
-      console.log(start,end);
       for(var i=0;i<7;++i){
         if( i >= start && i < end){
           dayboxs[i].style.backgroundColor = "var(--enable-color)"
@@ -105,7 +104,6 @@ export default {
             curDate.getMonth() == this.date.getMonth() &&
               getWeekNumber(curDate) == getWeekNumber(this.date) ){
         var curDay = curDate.getDay() == 0 ? 6 : curDate.getDay()-1;
-        console.log(curDay);
         document.getElementsByClassName("daybox")[curDay].style.borderColor = "var(--today-color)";
         document.getElementsByClassName("daybox")[curDay].style.backgroundColor = "var(--today-color)";
       }
