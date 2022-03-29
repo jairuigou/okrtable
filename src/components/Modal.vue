@@ -3,7 +3,7 @@
 
       <div class="item">
         <label>Detail: </label>
-        <Editor class="inputbox" @update-content="updateContent"></Editor>
+        <Editor class="inputbox" :content="detail" @update-content="updateContent"></Editor>
       </div>
 
       <div class="item">
@@ -30,7 +30,7 @@
       </div>
 
       
-      <button class="cancelbutton" @click="$emit('close-modal')">Cancel</button>
+      <button class="cancelbutton" @click="cancel">Cancel</button>
       <button class="createbutton" @click="submit">Create</button>
       
 
@@ -42,7 +42,7 @@ import PriorLabel from "./PriorLabel.vue";
 import StateLabel from "./StateLabel.vue";
 import Editor from "./Editor.vue";
 import axios from 'axios';
-import {date2Str} from '../utils'
+import {date2Str,getWeekDay} from '../utils'
 
 export default{
   components:{
@@ -61,11 +61,7 @@ export default{
   },
   emits:['refresh','close-modal'],
   mounted(){
-    var currentDate = new Date(Date.now());
-    currentDate.setHours(currentDate.getHours() + 8);
-    this.ddl = currentDate.toISOString();
-    this.ddl = this.ddl.substring(0,this.ddl.length-8);
-
+    this.init();
   },
   methods:{
     updatePriority(newValue){
@@ -76,6 +72,25 @@ export default{
     },
     updateContent(newValue){
       this.detail = newValue;
+    },
+    init(){
+      this.level = 1;
+      this.priority = 2;
+      this.state = "PENDING";
+      this.ddl = "";
+      this.detail = "";
+      var currentDate = new Date(Date.now());
+      currentDate.setDate(currentDate.getDate() + getWeekDay(currentDate));
+      currentDate.setHours(8);
+      currentDate.setMinutes(0);
+      currentDate.setSeconds(0);
+      currentDate.setMinutes(currentDate.getMinutes() - 1);
+      this.ddl = currentDate.toISOString();
+      this.ddl = this.ddl.substring(0,this.ddl.length-8);
+    },
+    cancel(){
+      this.$emit('close-modal');
+      this.init();
     },
     submit(){
       axios.post(process.env.VUE_APP_ROOTAPI + "/create",{

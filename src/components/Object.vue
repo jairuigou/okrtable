@@ -112,6 +112,9 @@ export default{
             .then(res=>{
                 if( 'success' in res.data){
                     this.state = newValue;
+                    if( 'timestamp' in res.data ){
+                        this.ddl = res.data.timestamp;
+                    }
                 }
                 else{
                     // todo error feedback
