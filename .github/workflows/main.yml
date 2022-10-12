@@ -17,11 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-      - name: Create .env.local file
-        run: |
-          echo VUE_APP_ROOTAPI=${{ secrets.BACKEND_URL }} >> .env.local
-          cat .env.local
-        
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         
@@ -48,6 +43,6 @@ jobs:
           context: .
           platforms: linux/arm64,linux/amd64
           push: true
-          file: dockerfile.production
+          file: dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

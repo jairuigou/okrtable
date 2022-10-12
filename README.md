@@ -2,26 +2,22 @@
 A vue application for object management.
 
 ## Getting Started
-### Prerequisites
-Create a file named `.env.local` under the project directory and set environment variables. `VUE_APP_ROOTAPI` is the backend api address.
+### For development
 ```
-# .env.local
-VUE_APP_ROOTAPI=http://localhost:3000
+$ git clone https://github.com/jairuigou/okrtable.git
+$ cd okrtable
+$ npm install
 ```
-### Build an image for development
+After configuring the backend api address in `vue.config.js`, start the development server by using `npm run`.
 ```
-$ docker build -t okrtable/okrtable-app .
+$ npm run serve
 ```
-Start app container.
+### Build an image for deployment
 ```
-$ docker run -p 8080:8080 -v ${PWD}:/usr/src/app --name okrtable-app-1 -d okrtable/okrtable-app
+$ cd okrtable
+$ docker build -t okrtable .
 ```
-
-### Build an image for production
+Create and start a container, need to set environment variable `BACKEND_ADDRESS` to the okrtable backend address.
 ```
-$ docker build -t okrtable/okrtable-app -f dockerfile.production
-```
-Start app container.
-```
-$ docker run -it -p 8080:80 --name okrtable-app-1 -d okrtable/okrtable-app  
+$ docker run -p 8080:80 --env BACKEND_ADDRESS=${backend_address} -d okrtable
 ```
