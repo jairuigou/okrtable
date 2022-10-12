@@ -100,7 +100,7 @@ export default {
       this.loadWeekObjectInfo(newWeekDate);
     },
     loadMonthObjectInfo(startDate){
-      axios.post(process.env.VUE_APP_ROOTAPI,{
+      axios.post('/api/',{
         level: 0,
         start: date2Str(startDate).substring(0,10),
         duration: getMonthDay(startDate)
@@ -114,7 +114,7 @@ export default {
       })
     },
     loadWeekObjectInfo(startDate){
-      axios.post(process.env.VUE_APP_ROOTAPI,{
+      axios.post('/api/',{
         level: 1,
         start: date2Str(startDate).substring(0,10),
         duration: getWeekDay(startDate)

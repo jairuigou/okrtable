@@ -93,7 +93,7 @@ export default{
       this.init();
     },
     submit(){
-      axios.post(process.env.VUE_APP_ROOTAPI + "/create",{
+      axios.post("/api/create",{
         detail: this.detail,
         level: this.level,
         priority: this.priority,
