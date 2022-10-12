@@ -63,7 +63,7 @@ export default{
         this.state = this.initData.state;
         this.ddl = this.initData.ddl;
         this.detail = this.initData.detail;
-        axios.post(process.env.VUE_APP_ROOTAPI + "/getprogress",{
+        axios.post("/api/getprogress",{
                 id: this.id,
             })
             .then(res=>{
@@ -86,7 +86,7 @@ export default{
     },
     methods:{
         updatePriority(newValue){
-            axios.post(process.env.VUE_APP_ROOTAPI + "/updateprior",{
+            axios.post("/api/updateprior",{
                 id: this.id,
                 priority: newValue
             })
@@ -105,7 +105,7 @@ export default{
             });
         },
         updateState(newValue){
-            axios.post(process.env.VUE_APP_ROOTAPI + "/updatestate",{
+            axios.post("/api/updatestate",{
                 id: this.id,
                 state: newValue
             })
@@ -128,7 +128,7 @@ export default{
         },
         updateProgress(newValue){
             console.log("update ",this.id," progress:",newValue);
-            axios.post(process.env.VUE_APP_ROOTAPI + "/updateprogress",{
+            axios.post("/api/updateprogress",{
                 id: this.id,
                 progress: newValue
             })
@@ -147,7 +147,7 @@ export default{
             });
         },
         updateDdl(newValue){
-            axios.post(process.env.VUE_APP_ROOTAPI + "/updateddl",{
+            axios.post("/api/updateddl",{
                 id: this.id,
                 ddl: date2Str(new Date(newValue))
             })
