@@ -4,4 +4,4 @@
 First available version
 
 ## [0.1.2] - 2022-10-12
-- Modify the way of backend configuration, use nginx forwarding
+- Modify the way of backend configuration
