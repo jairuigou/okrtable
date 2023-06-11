@@ -8,3 +8,5 @@ First available version
 
 ## [0.1.3] - 2022-10-13
 - Add the way of backend configuration, use nginx forwarding
+
+## [0.1.4] - 2022-10-14
