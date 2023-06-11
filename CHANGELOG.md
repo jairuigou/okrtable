@@ -10,3 +10,7 @@ First available version
 - Add the way of backend configuration, use nginx forwarding
 
 ## [0.1.4] - 2022-10-14
+- Modify the way of backend configuration
+
+## [0.1.3] - 2022-10-12
+- Modify the way of backend configuration
